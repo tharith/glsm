@@ -1,0 +1,21 @@
+// ─── MODULE 1G: DELEGATION ──────────────────────────────────────
+// ការផ្ទេរសិទ្ធិអនុម័តបណ្ដោះអាសន្ន
+// ឧ. DG ចេញបេសកកម្ម → delegate ទៅ Deputy DG
+// ក្នុងអំឡុងពេល start_date..end_date ពាក្យសុំទាំងអស់
+// នឹងបញ្ជូនទៅ toUser ស្វ័យប្រវត្ត
+
+model Delegation {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  startDate  DateTime
+  endDate    DateTime
+  reason     String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  fromUser User @relation("DelegatedBy", fields: [fromUserId], references: [id])
+  toUser   User @relation("DelegatedTo",  fields: [toUserId],   references: [id])
+
+  @@map("delegations")
+}

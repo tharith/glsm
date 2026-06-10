@@ -1,0 +1,26 @@
+// ─── MODULE 4C: WORKFLOW_INSTANCE ───────────────────────────────
+// Runtime state នៃ leave request ដែលកំពុង flow
+// 1 LeaveRequest = 1 WorkflowInstance
+// currentStep + currentRole = "ឥឡូវស្នើកំពុងស្ថិតនៅដៃ Role ណា"
+// ជួយ requester មើលឃើញ visual progress real-time
+
+model WorkflowInstance {
+  id             String    @id @default(cuid())
+  definitionId   String
+  leaveRequestId String    @unique
+  currentStep    Int       @default(1)
+  currentRole    RoleName?
+  isCompleted    Boolean   @default(false)
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  definition   WorkflowDefinition @relation(fields: [definitionId],   references: [id])
+  leaveRequest LeaveRequest       @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+
+  // Workflow monitoring
+  @@index([isCompleted])               // find active instances
+  @@index([currentRole, isCompleted])  // find pending for a role
+  @@index([definitionId])             // instances per workflow
+  @@map("workflow_instances")
+}

@@ -1,0 +1,27 @@
+// ─── MODULE 6A: NOTIFICATION ────────────────────────────────────
+// សារជូនដំណឹង in-app per user
+// type បញ្ជាក់ event (LEAVE_SUBMITTED, LEAVE_APPROVED...)
+// isRead/readAt: track unread badge count
+// ជំរុញ approver ឆ្លើយ​ឆ្លង​ឲ្យ​លឿន
+
+model Notification {
+  id             String           @id @default(cuid())
+  userId         String
+  type           NotificationType
+  titleKh        String
+  titleEn        String
+  body           String?
+  leaveRequestId String?
+  isRead         Boolean          @default(false)
+  readAt         DateTime?
+  createdAt      DateTime         @default(now())
+
+  user         User          @relation(fields: [userId],         references: [id], onDelete: Cascade)
+  leaveRequest LeaveRequest? @relation(fields: [leaveRequestId], references: [id], onDelete: SetNull)
+
+  // Notification queries — called on every page load
+  @@index([userId, isRead])          // unread count + list
+  @@index([userId, createdAt])       // sorted notifications
+  @@index([leaveRequestId])          // notifications per request
+  @@map("notifications")
+}

@@ -1,0 +1,63 @@
+// ─── ALL SYSTEM ENUMS ───────────────────────────────────────────
+
+enum RoleName {
+  SYSTEM_ADMIN
+  EMPLOYEE
+  OFFICE_CHIEF
+  DEPARTMENT_CHIEF
+  HR_OFFICER
+  DIRECTOR_GENERAL
+  INSTITUTION_HEAD
+  // Spec rule 1: Senior officials who go directly to INSTITUTION_HEAD
+  // អនុប្រធានអង្គភាព, ឧបការី, ជំនួយការប្រធានអង្គភាព
+  DEPUTY_INSTITUTION_HEAD
+}
+
+enum LeaveTypeCode {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  SPECIAL
+  STUDY
+  MISSION
+  UNPAID
+}
+
+enum LeaveStatus {
+  DRAFT
+  SUBMITTED
+  OFFICE_APPROVED
+  DEPT_APPROVED
+  HR_VERIFIED
+  DG_APPROVED
+  COMPLETED
+  REJECTED
+  RETURNED
+  CANCELLED
+}
+
+enum ApprovalAction {
+  APPROVED
+  REJECTED
+  RETURNED
+  VERIFIED
+}
+
+enum OrgUnitType {
+  INSTITUTION
+  GENERAL_DEPARTMENT
+  DEPARTMENT
+  OFFICE
+}
+
+enum NotificationType {
+  LEAVE_SUBMITTED
+  LEAVE_APPROVED
+  LEAVE_REJECTED
+  LEAVE_RETURNED
+  LEAVE_COMPLETED
+  LEAVE_CANCELLED
+  BALANCE_LOW
+  DELEGATION_ASSIGNED
+}

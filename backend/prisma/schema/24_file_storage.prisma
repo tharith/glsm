@@ -1,0 +1,20 @@
+// ─── MODULE 6B: FILE_STORAGE ────────────────────────────────────
+// Metadata នៃ uploaded files ទាំងអស់
+// storedName: UUID-based name ការពារ collision
+// path: disk path (local) ឬ S3 key (cloud)
+// mimeType + size: ប្រើ validate + display
+
+model FileStorage {
+  id           String   @id @default(cuid())
+  originalName String
+  storedName   String   @unique
+  mimeType     String
+  size         Int                            // bytes
+  path         String
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  attachments LeaveAttachment[]
+
+  @@map("file_storages")
+}

@@ -1,0 +1,29 @@
+// ─── MODULE 6C: AUDIT_LOG ───────────────────────────────────────
+// Security & Forensic: កត់ត្រា ALL sensitive actions
+// oldValue / newValue: JSON snapshot before/after change
+// ipAddress + userAgent: detect suspicious access
+// Non-repudiation: មិនអាចបង្ហាញថា "ខ្ញុំមិនបានធ្វើ" បានឡើយ
+// ✅ READ-ONLY TABLE — never update/delete rows
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String                  // LOGIN | CREATE | UPDATE | DELETE | APPROVE
+  module    String                  // auth | user | leave | workflow | balance
+  targetId  String?
+  oldValue  Json?
+  newValue  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  // Audit log queries — large table, must be indexed
+  @@index([userId])                  // actions by user (admin tracking)
+  @@index([module, action])          // filter by module + action
+  @@index([createdAt])               // time-based queries
+  @@index([userId, module, createdAt]) // compound for admin dashboard
+  @@index([targetId])                // all changes to a specific record
+  @@map("audit_logs")
+}

@@ -1,0 +1,16 @@
+// ─── MODULE 5C: LEAVE_ATTACHMENT ────────────────────────────────
+// ភ្ជាប់ leave request ជាមួយ uploaded files
+// Multi-attachment: ពាក្យ 1 → files ច្រើន
+// ឧ. ច្បាប់ឈឺ → ភ្ជាប់ វេជ្ជបញ្ជា + លិខិតបញ្ជាក់
+
+model LeaveAttachment {
+  id             String   @id @default(cuid())
+  leaveRequestId String
+  fileStorageId  String
+  createdAt      DateTime @default(now())
+
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  fileStorage  FileStorage  @relation(fields: [fileStorageId],  references: [id])
+
+  @@map("leave_attachments")
+}

@@ -1,0 +1,21 @@
+// ─── MODULE 4B: WORKFLOW_STEP ────────────────────────────────────
+// ជំហាននៃ workflow (ordered by stepNumber)
+// approverRole = Role ដែលត្រូវ approve step នោះ
+// timeoutHours = SLA: ប្រសិន approver មិន action ក្នុង X ម៉ោង
+//               system អាច remind ឬ escalate
+
+model WorkflowStep {
+  id           String   @id @default(cuid())
+  definitionId String
+  stepNumber   Int
+  name         String
+  approverRole RoleName
+  isOptional   Boolean  @default(false)
+  timeoutHours Int      @default(72)
+  createdAt    DateTime @default(now())
+
+  definition WorkflowDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@unique([definitionId, stepNumber])
+  @@map("workflow_steps")
+}

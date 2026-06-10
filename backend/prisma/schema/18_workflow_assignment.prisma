@@ -1,0 +1,18 @@
+// ─── MODULE 4D: WORKFLOW_ASSIGNMENT ─────────────────────────────
+// Map workflow definition → org unit
+// នាយកដ្ឋាន A ប្រើ Workflow X (5 steps)
+// នាយកដ្ឋាន B ប្រើ Workflow Y (2 steps — chief only)
+// Engine resolves correct workflow per user's orgUnit
+
+model WorkflowAssignment {
+  id           String   @id @default(cuid())
+  orgUnitId    String
+  definitionId String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  orgUnit    OrgUnit            @relation(fields: [orgUnitId],    references: [id])
+  definition WorkflowDefinition @relation(fields: [definitionId], references: [id])
+
+  @@map("workflow_assignments")
+}

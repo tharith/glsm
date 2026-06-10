@@ -1,0 +1,25 @@
+// ─── MODULE 3A: LEAVE_TYPE ──────────────────────────────────────
+// ប្រភេទច្បាប់ 8 យ៉ាង + rules
+// gender: null=all | M=male only | F=female only
+// requiresDoc: true = ត្រូវភ្ជាប់ឯកសារ (ឧ. ច្បាប់ឈឺ)
+// carryOver: អាច carry unused days ទៅឆ្នាំក្រោយ
+
+model LeaveType {
+  id             String        @id @default(cuid())
+  code           LeaveTypeCode @unique
+  nameKh         String
+  nameEn         String
+  maxDaysPerYear Int
+  requiresDoc    Boolean       @default(false)
+  isPaid         Boolean       @default(true)
+  carryOver      Boolean       @default(false)
+  maxCarryOver   Int           @default(0)
+  gender         String?                        // null | M | F
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+
+  leaveBalances LeaveBalance[]
+  leaveRequests LeaveRequest[]
+
+  @@map("leave_types")
+}

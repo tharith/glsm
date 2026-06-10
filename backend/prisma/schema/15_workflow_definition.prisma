@@ -1,0 +1,20 @@
+// ─── MODULE 4A: WORKFLOW_DEFINITION ─────────────────────────────
+// គំរូលំហូរការងារ (Template)
+// ឧ. "Standard 4-Step" | "Short 2-Step for Chiefs"
+// Dynamic: Admin អាចបង្កើត workflow ថ្មីដោយ config
+// មិនបាច់ touch code ឡើយ
+
+model WorkflowDefinition {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  steps       WorkflowStep[]
+  instances   WorkflowInstance[]
+  assignments WorkflowAssignment[]
+
+  @@map("workflow_definitions")
+}

@@ -1,0 +1,15 @@
+// ─── MODULE 1E: ROLE_PERMISSION (Pivot) ─────────────────────────
+// Many-to-Many: Role ↔ Permission
+// កំណត់ថា Role HR_OFFICER មាន permissions អ្វីខ្លះ
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId],       references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}

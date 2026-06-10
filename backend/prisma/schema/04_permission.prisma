@@ -1,0 +1,15 @@
+// ─── MODULE 1C: PERMISSION ──────────────────────────────────────
+// Granular action strings: module:action
+// ឧ. user:create | leave:approve | report:view
+
+model Permission {
+  id          String  @id @default(cuid())
+  action      String  @unique   // e.g. "leave:approve"
+  description String?
+  module      String?           // user | leave | workflow | report
+
+  rolePermissions RolePermission[]
+  userPermissions UserPermission[]
+
+  @@map("permissions")
+}

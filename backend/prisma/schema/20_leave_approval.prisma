@@ -1,0 +1,27 @@
+// ─── MODULE 5B: LEAVE_APPROVAL ──────────────────────────────────
+// កត់ត្រា decision នៃ approver ម្នាក់ៗ per step
+// ធានាគណនេយ្យភាព: ដឹងច្បាស់ថា
+//   → នរណា approve/reject | step ណា | ម៉ោងប៉ុន្មាន | comment អ្វី
+// Non-repudiation: approver មិនអាចប្រកែក action ខ្លួន
+
+model LeaveApproval {
+  id             String         @id @default(cuid())
+  leaveRequestId String
+  approverId     String
+  stepNumber     Int
+  approverRole   RoleName
+  action         ApprovalAction
+  comment        String?
+  signatureUrl   String?   // path to signature image
+  stampedAt      DateTime? // when signature/stamp was applied
+  actionedAt     DateTime       @default(now())
+
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  approver     User         @relation(fields: [approverId],     references: [id])
+
+  // Indexes for approval workflow
+  @@index([leaveRequestId])                  // approvals per request
+  @@index([approverId])                      // approvals by person
+  @@index([approverRole, actionedAt])        // audit by role
+  @@map("leave_approvals")
+}

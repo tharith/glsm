@@ -1,0 +1,16 @@
+// ─── MODULE 1D: USER_ROLE (Pivot) ───────────────────────────────
+// Many-to-Many: User ↔ Role
+// មន្ត្រីម្នាក់អាចមានតួនាទីច្រើន
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_role")
+}

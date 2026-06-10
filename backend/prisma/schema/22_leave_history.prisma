@@ -1,0 +1,23 @@
+// ─── MODULE 5D: LEAVE_HISTORY ───────────────────────────────────
+// Audit Trail ផ្ទាល់ខ្លួនរបស់ leave request
+// កត់ត្រា: status transitions + actor + comment + timestamp
+// ប្រើ render workflow timeline UI (step-by-step visual)
+// ឧ. SUBMITTED → OFFICE_APPROVED → DEPT_APPROVED → ...
+
+model LeaveHistory {
+  id             String       @id @default(cuid())
+  leaveRequestId String
+  actorId        String?
+  fromStatus     LeaveStatus?
+  toStatus       LeaveStatus
+  comment        String?
+  createdAt      DateTime     @default(now())
+
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+
+  // Audit trail queries
+  @@index([leaveRequestId])   // full history of a request
+  @@index([actorId])          // actions by a specific user
+  @@index([createdAt])        // time-based queries
+  @@map("leave_histories")
+}

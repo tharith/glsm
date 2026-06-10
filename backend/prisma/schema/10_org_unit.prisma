@@ -1,0 +1,23 @@
+// ─── MODULE 2A: ORGANIZATION_UNIT ───────────────────────────────
+// មែកធាងស្ថាប័ន: Institution → General Dept → Dept → Office
+// parent_id self-referencing = recursive tree structure
+// ប្រើ type field ដើម្បីបែងចែក level
+
+model OrgUnit {
+  id        String      @id @default(cuid())
+  code      String      @unique           // e.g. MOI-DEPT-IT
+  nameKh    String
+  nameEn    String
+  type      OrgUnitType
+  parentId  String?
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  parent              OrgUnit?             @relation("OrgHierarchy", fields: [parentId], references: [id])
+  children            OrgUnit[]            @relation("OrgHierarchy")
+  users               User[]
+  workflowAssignments WorkflowAssignment[]
+
+  @@map("organization_units")
+}

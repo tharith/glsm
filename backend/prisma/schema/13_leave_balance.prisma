@@ -1,0 +1,29 @@
+// ─── MODULE 3B: LEAVE_BALANCE ───────────────────────────────────
+// ចំនួនច្បាប់ប្រចាំឆ្នាំ per user per leave type
+// allocated = ចំនួនដើមឆ្នាំ
+// used      = ប្រើប្រាស់រួចហើយ (final approved)
+// pending   = កំពុងស្នើ (reserved, not yet final)
+// available = allocated - used - pending  (real-time check)
+// ✅ Validation Rule: ពាក្យថ្មី requires available >= requested
+
+model LeaveBalance {
+  id          String   @id @default(cuid())
+  userId      String
+  leaveTypeId String
+  year        Int
+  allocated   Float    @default(0)
+  used        Float    @default(0)
+  pending     Float    @default(0)
+  available   Float    @default(0)
+  carryOver   Float    @default(0)
+  updatedAt   DateTime @updatedAt
+
+  user      User      @relation(fields: [userId],      references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  @@unique([userId, leaveTypeId, year])
+  // Indexes for balance queries
+  @@index([userId, year])        // get all balances for a user in a year
+  @@index([leaveTypeId, year])   // balance report by type
+  @@map("leave_balances")
+}

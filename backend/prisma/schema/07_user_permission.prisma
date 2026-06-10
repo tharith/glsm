@@ -1,0 +1,17 @@
+// ─── MODULE 1F: USER_PERMISSION (Override) ──────────────────────
+// Direct permission assignment ទៅ user ម្នាក់ (bypass role)
+// granted=true  → explicit GRANT  (បន្ថែម)
+// granted=false → explicit DENY   (លុប ទោះ role មាន)
+
+model UserPermission {
+  id           String  @id @default(cuid())
+  userId       String
+  permissionId String
+  granted      Boolean @default(true)
+
+  user       User       @relation(fields: [userId],       references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
+}

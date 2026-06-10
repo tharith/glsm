@@ -1,0 +1,20 @@
+// ─── MODULE 1H: REFRESH_TOKEN ───────────────────────────────────
+// Long-lived token សម្រាប់ renew access token (7 days)
+// is_revoked=true នៅពេល logout ឬ security breach
+// Strategy: Rotation — revoke old, issue new ជាមួយ request
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Fast token lookup on every authenticated request
+  @@index([userId, isRevoked])  // revoke all tokens for a user
+  @@index([token])              // already unique but explicit index
+  @@map("refresh_tokens")
+}

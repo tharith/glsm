@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+  # ─── PostgreSQL ────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: glms_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: glms_db
+      POSTGRES_USER: glms_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-glms_secret_2025}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glms_user -d glms_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── NestJS Backend ────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: glms_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://glms_user:${DB_PASSWORD:-glms_secret_2025}@postgres:5432/glms_db
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-glms_access_change_me}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-glms_refresh_change_me}
+      JWT_ACCESS_EXPIRES: 15m
+      JWT_REFRESH_EXPIRES: 7d
+      NODE_ENV: production
+      PORT: 3000
+      FRONTEND_URL: http://localhost
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/app/uploads
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             npx ts-node prisma/seed.ts &&
+             node dist/main.js"
+
+  # ─── Vue 3 Frontend ────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000
+    container_name: glms_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  pgdata:
+  uploads:

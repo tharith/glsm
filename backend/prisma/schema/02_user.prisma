@@ -1,0 +1,102 @@
+// ─── MODULE 1A: USER ────────────────────────────────────────────
+// រក្សាទុកព័ត៌មានមន្ត្រីរាជការ + credentials
+// ជា "បេះដូង" ប្រព័ន្ធ — ទិន្នន័យទាំងអស់ FK ត្រឡប់មកនេះ
+
+model User {
+  id String @id @default(cuid())
+
+  // ── Identity ──────────────────────────────────────────────
+  signatureOfApplicant String?   @unique @map("signature_of_applicant") // អត្ថលេខ
+  employeeId           String?   @unique @map("employee_id") // លេខអត្តលេខមន្ត្រី
+  firstName            String?   @map("first_name")
+  lastName             String?   @map("last_name")
+  firstNameKh          String?   @map("first_name_kh")
+  lastNameKh           String?   @map("last_name_kh")
+  email                String?   @unique
+  phone                String?
+  dateOfBirth          DateTime? @map("date_of_birth")
+  dop                  String?   @map("dop") // ទីកន្លែងកំណើត
+  gender               String? // Male | Female
+  nationalId           String?   @map("national_id")
+  passportNumber       String?   @map("passport_number")
+  address              String?   @map("address")
+
+  // ── Photo & Signature ─────────────────────────────────────
+  photo           String? @map("photo") // photo URL (served statically)
+  photoPath       String? @map("photo_path") // photo disk path
+  avatarUrl       String? @map("avatar_url") // alias kept for compatibility
+  signatureImage  String? @map("signature_image") // signature image URL
+  signatureFileId Int?    @map("signature_file_id") // FK to file_storages (optional)
+
+  // ── Work Info ─────────────────────────────────────────────
+  positionId                 String?   @map("position_id")
+  orgUnitId                  String?   @map("org_unit_id")
+  hireDate                   DateTime? @map("hire_date") // ថ្ងៃចូលធ្វើការ
+  dateOfPermanentAppointment DateTime? @map("date_of_permanent_appointment") // ថ្ងៃខែឆ្នាំតាំងស៊ប់
+  workExperience             Int?      @map("work_experience") // អតីតភាពការងារ (years)
+  currentRankAndGrade        String?   @map("current_rank_and_grade") // ឋានន្តរសក្កិ និងថ្នាក់បច្ចុប្បន្ន
+  dateOfLastPromotion        DateTime? @map("date_of_last_promotion") // ថ្ងៃខែឆ្នាំដំឡើងចុងក្រោយ
+  medalAwarded               String?   @map("medal_awarded") // គ្រឿងឥស្សរិយយស
+  dateOfAward                DateTime? @map("date_of_award") // ថ្ងៃខែឆ្នាំបង្កើតឥស្សរិយយស
+
+  // ── Education & Language ──────────────────────────────────
+  educationLevel   String? @map("education_level") // កម្រិតសញ្ញាបត្រ
+  foreignLanguages String? @map("foreign_languages") // ភាសាបរទេស
+
+  // ── Spouse ────────────────────────────────────────────────
+  nameOfSpouse       String? @map("name_of_spouse") // ឈ្មោះប្តីឬប្រពន្ធ
+  occupationOfSpouse String? @map("occupation_of_spouse") // មុខរបរប្តីឬប្រពន្ធ
+  workplaceOfSpouse  Int?    @map("workplace_of_spouse") // ទីកន្លែងធ្វើការ
+  numberOfChildren   Int?    @map("number_of_children") // ចំនួនកូន
+  numbersOfSiblings  Int?    @map("numbers_of_siblings") // ចំនួនបងប្អូន
+
+  // ── Father ────────────────────────────────────────────────
+  fathersName       String? @map("fathers_name") // ឈ្មោះឪពុកបង្កើត
+  dopOfFathers      String? @map("dop_of_fathers") // ទីកន្លែងកំណើតឪពុក
+  fathersOccupation String? @map("fathers_occupation") // មុខរបរឪពុក
+
+  // ── Mother ────────────────────────────────────────────────
+  mothersName       String? @map("mothers_name") // ឈ្មោះម្ដាយបង្កើត
+  dopOfMothers      String? @map("dop_of_mothers") // ទីកន្លែងកំណើតម្ដាយ
+  mothersOccupation String? @map("mothers_occupation") // មុខរបរម្ដាយ
+
+  // ── Father-in-Law ─────────────────────────────────────────
+  fathersInLawName       String? @map("fathers_in_law_name") // ឈ្មោះឪពុកក្មេក
+  dopOfFathersInLaw      String? @map("dop_of_fathers_in_law") // ទីកន្លែងកំណើតឪពុកក្មេក
+  fathersInLawOccupation String? @map("fathers_in_law_occupation") // មុខរបរឪពុកក្មេក
+
+  // ── Mother-in-Law ─────────────────────────────────────────
+  mothersInLawName       String? @map("mothers_in_law_name") // ឈ្មោះម្ដាយក្មេក
+  dopOfMothersInLaw      String? @map("dop_of_mothers_in_law") // ទីកន្លែងកំណើតម្ដាយក្មេក
+  mothersInLawOccupation String? @map("mothers_in_law_occupation") // មុខរបរម្ដាយក្មេក
+
+  // ── Auth & System ─────────────────────────────────────────
+  passwordHash String?   @map("password_hash")
+  isActive     Boolean   @default(true) @map("is_active")
+  isDeleted    Boolean   @default(false) @map("is_delete")
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+
+  // ── Relations ─────────────────────────────────────────────
+  position        Position?        @relation(fields: [positionId], references: [id])
+  orgUnit         OrgUnit?         @relation(fields: [orgUnitId], references: [id])
+  userRoles       UserRole[]
+  userPermissions UserPermission[]
+  refreshTokens   RefreshToken[]
+  delegationsFrom Delegation[]     @relation("DelegatedBy")
+  delegationsTo   Delegation[]     @relation("DelegatedTo")
+  leaveRequests   LeaveRequest[]
+  leaveApprovals  LeaveApproval[]
+  leaveBalances   LeaveBalance[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+
+  // ── Performance Indexes ───────────────────────────────────
+  @@index([email]) // login
+  @@index([employeeId]) // search by employee ID
+  @@index([orgUnitId]) // filter by department
+  @@index([positionId]) // filter by position
+  @@index([isActive, isDeleted]) // active users filter
+  @@map("users")
+}

@@ -1,0 +1,15 @@
+// ─── MODULE 3C: PUBLIC_HOLIDAY ──────────────────────────────────
+// បញ្ជីថ្ងៃឈប់បុណ្យជាតិ រាជរដ្ឋាភិបាល
+// ប្រើដោយ calculateWorkingDays() service
+// → ដក weekends (Sat/Sun) + ថ្ងៃបុណ្យ ចេញពី total
+
+model PublicHoliday {
+  id          String   @id @default(cuid())
+  nameKh      String
+  nameEn      String
+  date        DateTime
+  year        Int
+  isRecurring Boolean  @default(true)
+
+  @@map("public_holidays")
+}

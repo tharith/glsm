@@ -1,0 +1,15 @@
+// ─── MODULE 1B: ROLE ────────────────────────────────────────────
+// ​តួនាទីចម្បងក្នុងប្រព័ន្ធ (RBAC)
+// Group permissions ជាក់លាក់ ហើយ assign ទៅ users
+
+model Role {
+  id          String   @id @default(cuid())
+  name        RoleName @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}

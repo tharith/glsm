@@ -1,0 +1,18 @@
+// ─── MODULE 2B: POSITION ────────────────────────────────────────
+// មុខតំណែងផ្លូវការ: Director General, Dept Chief, Staff...
+// rank: 1=highest, 5=lowest (used for display ordering)
+// បង្ហាញនៅលើ លិខិតអនុម័ត និងទម្រង់ពាក្យសុំ
+
+model Position {
+  id        String   @id @default(cuid())
+  code      String   @unique           // e.g. DG | DC | OC | STAFF
+  nameKh    String
+  nameEn    String
+  rank      Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  users User[]
+
+  @@map("positions")
+}
