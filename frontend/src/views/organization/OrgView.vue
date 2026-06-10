@@ -103,7 +103,7 @@
       >
         <v-form ref="formRef" v-model="isValid">
           <v-row dense class="pt-2">
-            <v-col cols="12" sm="6" class="pb-4">
+            <v-col cols="12" sm="6" class="pb-2">
               <label class="form-label"
                 >Code <span class="text-error">*</span></label
               >
@@ -117,10 +117,11 @@
                 :disabled="!!editItem"
                 color="primary"
                 class="custom-input"
+                placeholder="Input here..."
               />
             </v-col>
 
-            <v-col cols="12" sm="6" class="pb-4">
+            <v-col cols="12" sm="6" class="pb-2">
               <label class="form-label"
                 >Type <span class="text-error">*</span></label
               >
@@ -135,21 +136,7 @@
               />
             </v-col>
 
-            <v-col cols="12" class="pb-4">
-              <label class="form-label"
-                >Name (English) <span class="text-error">*</span></label
-              >
-              <v-text-field
-                v-model="form.nameEn"
-                variant="outlined"
-                density="comfortable"
-                :rules="[(r) => !!r || 'Required']"
-                color="primary"
-                class="custom-input"
-              />
-            </v-col>
-
-            <v-col cols="12" class="pb-4">
+            <v-col cols="12" class="pb-2">
               <label class="form-label font-khmer"
                 >ឈ្មោះ (ភាសាខ្មែរ) <span class="text-error">*</span></label
               >
@@ -163,7 +150,21 @@
               />
             </v-col>
 
-            <v-col cols="12" class="pb-4">
+            <v-col cols="12" class="pb-2">
+              <label class="form-label"
+                >Name (English) <span class="text-error">*</span></label
+              >
+              <v-text-field
+                v-model="form.nameEn"
+                variant="outlined"
+                density="comfortable"
+                :rules="[(r) => !!r || 'Required']"
+                color="primary"
+                class="custom-input"
+              />
+            </v-col>
+
+            <v-col cols="12" class="pb-2">
               <label class="form-label">Parent Unit</label>
               <v-autocomplete
                 v-model="form.parentId"
@@ -376,6 +377,7 @@ function openRestore(item: any) {
 async function save() {
   saving.value = true;
   try {
+    alert(JSON.stringify(form.value));
     if (editItem.value)
       await api.patch(`/organization/${editItem.value.id}`, form.value);
     else await api.post("/organization", form.value);
