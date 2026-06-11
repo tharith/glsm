@@ -256,7 +256,7 @@ async function main() {
     create: {
       code: "MOI",
       nameKh: "អង្គភាពប្រឆាំងអំពើពុករលួយ",
-      nameEn: "Ministry of Information",
+      nameEn: "Anti Corruption Unit",
       type: OrgUnitType.INSTITUTION,
     },
   });

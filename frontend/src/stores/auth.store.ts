@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "@/plugins/axios";
 import type { User } from "@/types";
+import { API } from "@/config/api";
 
 export const useAuthStore = defineStore("auth", () => {
   // State
@@ -52,10 +53,17 @@ export const useAuthStore = defineStore("auth", () => {
   const hasPermission = (perm: string) => permissions.value.includes(perm);
 
   // Actions
-  async function login(identifier: string, password: string) {
+  async function login(
+    identifier: string,
+    password: string,
+    loginChoice?: string,
+  ) {
     try {
-      const res = await api.post("/auth/login", { identifier, password });
-      // Clean structure assuming Axios interceptor unwarps data or handles it natively
+      const res = await api.post(API.AUTH.LOGIN, {
+        identifier,
+        password,
+        loginChoice,
+      });
       const data = res.data?.data || res.data || res;
 
       accessToken.value = data.accessToken;
@@ -74,7 +82,8 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function fetchProfile() {
     try {
-      const res = await api.get("/auth/me");
+      //const res = await api.get("/auth/me");
+      const res = await api.get(API.AUTH.ME);
       user.value = res.data?.data || res.data || res;
     } catch (error) {
       clearAuthData();

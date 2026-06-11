@@ -22,7 +22,7 @@ export class AuthController {
     description: 'Login with **employeeId** (លេខអត្តលេខ) or **signatureOfApplicant** (អត្ថលេខ) + password',
   })
   login(@Body() dto: LoginDto) {
-    return this.auth.login(dto.identifier, dto.password);
+    return this.auth.login(dto.identifier, dto.password, dto.loginChoice);
   }
 
   @Post('refresh')

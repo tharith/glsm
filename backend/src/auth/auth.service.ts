@@ -23,15 +23,24 @@ export class AuthService {
    * Login with employeeId OR signatureOfApplicant + password
    * PDF spec: identifier = អត្តលេខ (employee ID) ឬ អត្ថលេខ (signature ID)
    */
-  async login(identifier: string, password: string) {
+  async login(identifier: string, password: string, loginChoice?: string) {
+    console.log("loginChoice", loginChoice);
+    const whereCondition =
+      loginChoice === "employeeId"
+        ? {
+            employeeId: identifier,
+            isDeleted: false,
+          }
+        : {
+            signatureOfApplicant: identifier,
+            isDeleted: false,
+          };
+
+    console.log("whereCondition", JSON.stringify(whereCondition));
+
     // Try to find user by employeeId first, then signatureOfApplicant
     const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          { employeeId: identifier, isDeleted: false },
-          { signatureOfApplicant: identifier, isDeleted: false },
-        ],
-      },
+      where: whereCondition,
     });
 
     // Validate password
